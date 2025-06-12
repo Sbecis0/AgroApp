@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agro App - Gestión de Animales</title>
-    <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
-    <meta name="description" content="Agro App - Gestión Inteligente de Animales de Granja">
-    <link rel="stylesheet" href="../css/index.css">
     <style>
         * {
             margin: 0;
@@ -340,20 +337,7 @@
             margin-top: 10px;
             display: none;
         }
-
-        .visually-hidden {
-            position: absolute !important;
-            width: 1px !important;
-            height: 1px !important;
-            padding: 0 !important;
-            margin: -1px !important;
-            overflow: hidden !important;
-            clip: rect(0, 0, 0, 0) !important;
-            white-space: nowrap !important;
-            border: 0 !important;
-        }
     </style>
-
 </head>
 <body>
 <div class="container">
@@ -361,8 +345,6 @@
         <h1>🐄 Agro App</h1>
         <p>Gestión Inteligente de Animales de Granja</p>
     </div>
-
-
 
     <div class="main-content">
         <div class="form-section">
@@ -378,7 +360,7 @@
                     <select id="tipo" name="tipo" required>
                         <option value="">Seleccionar tipo</option>
                         <option value="Vaca">🐄 Vaca</option>
-                        <option value="Pato">🦆 Pato</option>
+                        <option value="Cerdo">🐷 Cerdo</option>
                         <option value="Oveja">🐑 Oveja</option>
                         <option value="Cabra">🐐 Cabra</option>
                         <option value="Pollo">🐔 Pollo</option>
@@ -457,12 +439,10 @@
 
             <div class="search-filter">
                 <input type="text" id="searchInput" placeholder="🔍 Buscar por nombre..." onkeyup="filtrarAnimales()">
-
-                <label for="filterTipo" class="visually-hidden">Filtrar por tipo</label>
                 <select id="filterTipo" onchange="filtrarAnimales()">
                     <option value="">Todos los tipos</option>
                     <option value="Vaca">Vacas</option>
-                    <option value="Patos">Patos</option>
+                    <option value="Cerdo">Cerdos</option>
                     <option value="Oveja">Ovejas</option>
                     <option value="Cabra">Cabras</option>
                     <option value="Pollo">Pollos</option>
@@ -470,14 +450,14 @@
                     <option value="Caballo">Caballos</option>
                     <option value="Otro">Otros</option>
                 </select>
-
-                <label for="filterEstado" class="visually-hidden">Filtrar por estado</label>
                 <select id="filterEstado" onchange="filtrarAnimales()">
                     <option value="">Todos los estados</option>
                     <option value="Activo">Activos</option>
                     <option value="Vendido">Vendidos</option>
                     <option value="Procesado">Procesados</option>
                 </select>
+                <button class="camera-btn" onclick="exportarDatos()" style="flex: 0 0 auto; margin: 0;">📤 Exportar</button>
+                <button class="camera-btn" onclick="limpiarDatos()" style="flex: 0 0 auto; margin: 0; background: linear-gradient(135deg, #dc3545, #c82333);">🗑️ Limpiar</button>
             </div>
 
             <div class="animals-grid" id="animalsGrid">
@@ -490,6 +470,7 @@
 <script>
     let animales = [];
     let currentPhotoData = null;
+    const STORAGE_KEY = 'agroapp_animales';
 
     // Cargar datos al iniciar
     document.addEventListener('DOMContentLoaded', function() {
@@ -547,7 +528,7 @@
         };
 
         animales.push(animal);
-        guardarAnimales();
+        autoGuardar(); // Cambiar a auto-guardado
         mostrarAnimales();
         actualizarEstadisticas();
 
@@ -628,7 +609,7 @@
     function getAnimalEmoji(tipo) {
         const emojis = {
             'Vaca': '🐄',
-            'Pato': '🦆',
+            'Cerdo': '🐷',
             'Oveja': '🐑',
             'Cabra': '🐐',
             'Pollo': '🐔',
@@ -656,7 +637,7 @@
     function eliminarAnimal(id) {
         if (confirm('¿Estás seguro de que quieres eliminar este animal?')) {
             animales = animales.filter(animal => animal.id !== id);
-            guardarAnimales();
+            autoGuardar(); // Cambiar a auto-guardado
             mostrarAnimales();
             actualizarEstadisticas();
             mostrarMensaje('Animal eliminado correctamente', 'warning');
@@ -700,13 +681,32 @@
     }
 
     function guardarAnimales() {
-        // Simulamos guardado en memoria durante la sesión
-        // En una aplicación real, aquí se guardaría en una base de datos
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(animales));
+            console.log('✅ Datos guardados correctamente');
+        } catch (error) {
+            console.error('❌ Error al guardar:', error);
+            mostrarMensaje('Error al guardar los datos', 'error');
+        }
     }
 
     function cargarAnimales() {
-        // Los datos se mantienen en memoria durante la sesión
-        mostrarAnimales();
+        try {
+            const datosGuardados = localStorage.getItem(STORAGE_KEY);
+            if (datosGuardados) {
+                animales = JSON.parse(datosGuardados);
+                console.log(`✅ Cargados ${animales.length} animales`);
+            } else {
+                animales = [];
+                console.log('ℹ️ No hay datos guardados, iniciando con lista vacía');
+            }
+            mostrarAnimales();
+        } catch (error) {
+            console.error('❌ Error al cargar:', error);
+            animales = [];
+            mostrarMensaje('Error al cargar los datos', 'error');
+            mostrarAnimales();
+        }
     }
 
     function mostrarMensaje(mensaje, tipo) {
@@ -729,6 +729,8 @@
             msgDiv.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
         } else if (tipo === 'warning') {
             msgDiv.style.background = 'linear-gradient(135deg, #FF9800, #f57c00)';
+        } else if (tipo === 'error') {
+            msgDiv.style.background = 'linear-gradient(135deg, #f44336, #d32f2f)';
         }
 
         msgDiv.textContent = mensaje;
@@ -738,7 +740,9 @@
         setTimeout(() => {
             msgDiv.style.animation = 'slideOut 0.3s ease';
             setTimeout(() => {
-                document.body.removeChild(msgDiv);
+                if (document.body.contains(msgDiv)) {
+                    document.body.removeChild(msgDiv);
+                }
             }, 300);
         }, 3000);
     }
@@ -756,6 +760,70 @@
         }
     `;
     document.head.appendChild(style);
+
+    // Funciones adicionales para manejo de datos
+    function exportarDatos() {
+        try {
+            const datos = {
+                animales: animales,
+                fechaExportacion: new Date().toLocaleString('es-ES'),
+                totalAnimales: animales.length
+            };
+
+            const dataStr = JSON.stringify(datos, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `agroapp_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+
+            mostrarMensaje('Datos exportados correctamente', 'success');
+        } catch (error) {
+            console.error('Error al exportar:', error);
+            mostrarMensaje('Error al exportar los datos', 'error');
+        }
+    }
+
+    function limpiarDatos() {
+        if (confirm('⚠️ ¿Estás seguro de que quieres eliminar TODOS los datos?\n\nEsta acción no se puede deshacer.')) {
+            if (confirm('🚨 ÚLTIMA CONFIRMACIÓN: Se eliminarán todos los animales registrados.')) {
+                try {
+                    localStorage.removeItem(STORAGE_KEY);
+                    animales = [];
+                    mostrarAnimales();
+                    actualizarEstadisticas();
+                    mostrarMensaje('Todos los datos han sido eliminados', 'warning');
+                } catch (error) {
+                    console.error('Error al limpiar:', error);
+                    mostrarMensaje('Error al limpiar los datos', 'error');
+                }
+            }
+        }
+    }
+
+    // Mostrar información de almacenamiento al cargar
+    function mostrarInfoAlmacenamiento() {
+        if (typeof(Storage) !== "undefined") {
+            const datosGuardados = localStorage.getItem(STORAGE_KEY);
+            const tamaño = datosGuardados ? (datosGuardados.length / 1024).toFixed(2) : 0;
+            console.log(`📊 Almacenamiento local: ${tamaño} KB utilizados`);
+        } else {
+            console.warn('⚠️ El navegador no soporta almacenamiento local');
+            mostrarMensaje('Tu navegador no soporta almacenamiento local', 'warning');
+        }
+    }
+
+    // Auto-guardado cada vez que se modifica algo
+    function autoGuardar() {
+        guardarAnimales();
+        mostrarInfoAlmacenamiento();
+    }
+
+    // Comprobar soporte de almacenamiento al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+        mostrarInfoAlmacenamiento();
+    });
 </script>
 </body>
 </html>
