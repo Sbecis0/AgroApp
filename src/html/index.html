@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agro App - Gestión de Animales</title>
+    <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
+    <meta name="description" content="Agro App - Gestión Inteligente de Animales de Granja">
+    <link rel="stylesheet" href="../css/index.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🐄 Agro App</h1>
+        <p>Gestión Inteligente de Animales de Granja</p>
+    </div>
+
+    <div class="main-content">
+        <div class="form-section">
+            <h2>📝 Registrar Animal</h2>
+            <form id="animalForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Animal:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo">Tipo de Animal:</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="Vaca">🐄 Vaca</option>
+                        <option value="Pato">🦆 Pato</option>
+                        <option value="Oveja">🐑 Oveja</option>
+                        <option value="Cabra">🐐 Cabra</option>
+                        <option value="Pollo">🐔 Pollo</option>
+                        <option value="Pavo">🦃 Pavo</option>
+                        <option value="Caballo">🐴 Caballo</option>
+                        <option value="Otro">🐾 Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="raza">Raza:</label>
+                    <input type="text" id="raza" name="raza">
+                </div>
+
+                <div class="form-group">
+                    <label for="peso">Peso (kg):</label>
+                    <input type="number" id="peso" name="peso" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                    <input type="date" id="fechaNacimiento" name="fechaNacimiento">
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaEntrada">Fecha de Entrada a la Granja:</label>
+                    <input type="date" id="fechaEntrada" name="fechaEntrada" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaVenta">Fecha Prevista de Venta/Procesamiento:</label>
+                    <input type="date" id="fechaVenta" name="fechaVenta">
+                </div>
+
+                <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <select id="estado" name="estado" required>
+                        <option value="Activo">✅ Activo</option>
+                        <option value="Vendido">💰 Vendido</option>
+                        <option value="Procesado">🥩 Procesado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notas">Notas Adicionales:</label>
+                    <textarea id="notas" name="notas" rows="3" placeholder="Vacunas, tratamientos, observaciones..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="camera-btn" onclick="tomarFoto()">📷 Tomar Foto</button>
+                    <input type="file" id="fotoInput" accept="image/*" capture="camera" style="display: none;" onchange="previewPhoto()">
+                    <img id="photoPreview" class="photo-preview">
+                </div>
+
+                <button type="submit" class="submit-btn">➕ Agregar Animal</button>
+            </form>
+        </div>
+
+        <div class="animals-section">
+            <h2>🐾 Mis Animales</h2>
+
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAnimales">0</div>
+                    <div class="stat-label">Total Animales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="animalesActivos">0</div>
+                    <div class="stat-label">Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="proximasVentas">0</div>
+                    <div class="stat-label">Próximas Ventas</div>
+                </div>
+            </div>
+
+            <div class="search-filter">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar por nombre..." onkeyup="filtrarAnimales()">
+
+                <label for="filterTipo" class="visually-hidden">Filtrar por tipo</label>
+                <select id="filterTipo" onchange="filtrarAnimales()">
+                    <option value="">Todos los tipos</option>
+                    <option value="Vaca">Vacas</option>
+                    <option value="Patos">Patos</option>
+                    <option value="Oveja">Ovejas</option>
+                    <option value="Cabra">Cabras</option>
+                    <option value="Pollo">Pollos</option>
+                    <option value="Pavo">Pavos</option>
+                    <option value="Caballo">Caballos</option>
+                    <option value="Otro">Otros</option>
+                </select>
+
+                <label for="filterEstado" class="visually-hidden">Filtrar por estado</label>
+                <select id="filterEstado" onchange="filtrarAnimales()">
+                    <option value="">Todos los estados</option>
+                    <option value="Activo">Activos</option>
+                    <option value="Vendido">Vendidos</option>
+                    <option value="Procesado">Procesados</option>
+                </select>
+            </div>
+
+            <div class="animals-grid" id="animalsGrid">
+                <!-- Los animales se mostrarán aquí -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/index.js"></script>
+</body>
+</html>
