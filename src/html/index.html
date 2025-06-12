@@ -7,6 +7,352 @@
     <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
     <meta name="description" content="Agro App - Gestión Inteligente de Animales de Granja">
     <link rel="stylesheet" href="../css/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            transition: transform 0.3s ease;
+        }
+
+        .form-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-section h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .camera-btn {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a52);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .camera-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .animals-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .animals-section h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        .animals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .animal-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .animal-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .animal-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #ddd, #bbb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 48px;
+        }
+
+        .animal-info {
+            padding: 20px;
+        }
+
+        .animal-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .animal-detail {
+            margin-bottom: 8px;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .animal-detail strong {
+            color: #4CAF50;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-activo {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-vendido {
+            background: #FF9800;
+            color: white;
+        }
+
+        .status-procesado {
+            background: #f44336;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff3742;
+            transform: scale(1.05);
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-filter input,
+        .search-filter select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .animals-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .photo-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .visually-hidden {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+    </style>
 
 </head>
 <body>
@@ -141,6 +487,275 @@
     </div>
 </div>
 
-<script src="../js/index.js"></script>
+<script>
+    let animales = [];
+    let currentPhotoData = null;
+
+    // Cargar datos al iniciar
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarAnimales();
+        actualizarEstadisticas();
+
+        // Establecer fecha actual por defecto
+        const hoy = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaEntrada').value = hoy;
+    });
+
+    // Manejar envío del formulario
+    document.getElementById('animalForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        agregarAnimal();
+    });
+
+    function tomarFoto() {
+        document.getElementById('fotoInput').click();
+    }
+
+    function previewPhoto() {
+        const input = document.getElementById('fotoInput');
+        const preview = document.getElementById('photoPreview');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                currentPhotoData = e.target.result;
+                preview.src = currentPhotoData;
+                preview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function agregarAnimal() {
+        const formData = new FormData(document.getElementById('animalForm'));
+
+        const animal = {
+            id: Date.now(),
+            nombre: formData.get('nombre'),
+            tipo: formData.get('tipo'),
+            raza: formData.get('raza') || 'No especificada',
+            peso: formData.get('peso') || 'No especificado',
+            fechaNacimiento: formData.get('fechaNacimiento') || 'No especificada',
+            fechaEntrada: formData.get('fechaEntrada'),
+            fechaVenta: formData.get('fechaVenta') || 'No especificada',
+            estado: formData.get('estado'),
+            notas: formData.get('notas') || 'Sin notas',
+            foto: currentPhotoData,
+            fechaRegistro: new Date().toLocaleDateString('es-ES')
+        };
+
+        animales.push(animal);
+        guardarAnimales();
+        mostrarAnimales();
+        actualizarEstadisticas();
+
+        // Limpiar formulario
+        document.getElementById('animalForm').reset();
+        document.getElementById('photoPreview').style.display = 'none';
+        currentPhotoData = null;
+
+        // Establecer fecha actual por defecto nuevamente
+        const hoy = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaEntrada').value = hoy;
+
+        // Mostrar mensaje de éxito
+        mostrarMensaje('Animal registrado correctamente', 'success');
+    }
+
+    function mostrarAnimales(animalesFiltrados = null) {
+        const grid = document.getElementById('animalsGrid');
+        const animalesAMostrar = animalesFiltrados || animales;
+
+        if (animalesAMostrar.length === 0) {
+            grid.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1em; padding: 40px;">No hay animales registrados</p>';
+            return;
+        }
+
+        grid.innerHTML = animalesAMostrar.map(animal => {
+            const diasEnGranja = calcularDias(animal.fechaEntrada);
+            const edadMeses = animal.fechaNacimiento !== 'No especificada' ?
+                calcularMeses(animal.fechaNacimiento) : 'No especificada';
+
+            return `
+                <div class="animal-card">
+                    <div class="status-badge status-${animal.estado.toLowerCase()}">${animal.estado}</div>
+                    <div class="animal-photo">
+                        ${animal.foto ?
+                            `<img src="${animal.foto}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                            getAnimalEmoji(animal.tipo)
+                        }
+                    </div>
+                    <div class="animal-info">
+                        <div class="animal-name">${animal.nombre}</div>
+                        <div class="animal-detail">
+                            <span><strong>Tipo:</strong></span>
+                            <span>${animal.tipo}</span>
+                        </div>
+                        <div class="animal-detail">
+                            <span><strong>Raza:</strong></span>
+                            <span>${animal.raza}</span>
+                        </div>
+                        <div class="animal-detail">
+                            <span><strong>Peso:</strong></span>
+                            <span>${animal.peso} kg</span>
+                        </div>
+                        <div class="animal-detail">
+                            <span><strong>Edad:</strong></span>
+                            <span>${edadMeses} meses</span>
+                        </div>
+                        <div class="animal-detail">
+                            <span><strong>En granja:</strong></span>
+                            <span>${diasEnGranja} días</span>
+                        </div>
+                        <div class="animal-detail">
+                            <span><strong>Venta prevista:</strong></span>
+                            <span>${animal.fechaVenta}</span>
+                        </div>
+                        ${animal.notas !== 'Sin notas' ?
+                            `<div class="animal-detail" style="grid-column: 1/-1; margin-top: 10px;">
+                                <strong>Notas:</strong> ${animal.notas}
+                            </div>` : ''
+                        }
+                        <button class="delete-btn" onclick="eliminarAnimal(${animal.id})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function getAnimalEmoji(tipo) {
+        const emojis = {
+            'Vaca': '🐄',
+            'Pato': '🦆',
+            'Oveja': '🐑',
+            'Cabra': '🐐',
+            'Pollo': '🐔',
+            'Pavo': '🦃',
+            'Caballo': '🐴',
+            'Otro': '🐾'
+        };
+        return emojis[tipo] || '🐾';
+    }
+
+    function calcularDias(fechaInicio) {
+        const inicio = new Date(fechaInicio);
+        const hoy = new Date();
+        const diferencia = hoy - inicio;
+        return Math.floor(diferencia / (1000 * 60 * 60 * 24));
+    }
+
+    function calcularMeses(fechaNacimiento) {
+        const nacimiento = new Date(fechaNacimiento);
+        const hoy = new Date();
+        const meses = (hoy.getFullYear() - nacimiento.getFullYear()) * 12 + (hoy.getMonth() - nacimiento.getMonth());
+        return Math.max(0, meses);
+    }
+
+    function eliminarAnimal(id) {
+        if (confirm('¿Estás seguro de que quieres eliminar este animal?')) {
+            animales = animales.filter(animal => animal.id !== id);
+            guardarAnimales();
+            mostrarAnimales();
+            actualizarEstadisticas();
+            mostrarMensaje('Animal eliminado correctamente', 'warning');
+        }
+    }
+
+    function filtrarAnimales() {
+        const busqueda = document.getElementById('searchInput').value.toLowerCase();
+        const tipoFiltro = document.getElementById('filterTipo').value;
+        const estadoFiltro = document.getElementById('filterEstado').value;
+
+        const animalesFiltrados = animales.filter(animal => {
+            const coincideNombre = animal.nombre.toLowerCase().includes(busqueda);
+            const coincideTipo = !tipoFiltro || animal.tipo === tipoFiltro;
+            const coincideEstado = !estadoFiltro || animal.estado === estadoFiltro;
+
+            return coincideNombre && coincideTipo && coincideEstado;
+        });
+
+        mostrarAnimales(animalesFiltrados);
+    }
+
+    function actualizarEstadisticas() {
+        const total = animales.length;
+        const activos = animales.filter(a => a.estado === 'Activo').length;
+
+        // Calcular próximas ventas (animales con fecha de venta en los próximos 30 días)
+        const hoy = new Date();
+        const enTreintaDias = new Date();
+        enTreintaDias.setDate(hoy.getDate() + 30);
+
+        const proximasVentas = animales.filter(animal => {
+            if (animal.fechaVenta === 'No especificada' || animal.estado !== 'Activo') return false;
+            const fechaVenta = new Date(animal.fechaVenta);
+            return fechaVenta >= hoy && fechaVenta <= enTreintaDias;
+        }).length;
+
+        document.getElementById('totalAnimales').textContent = total;
+        document.getElementById('animalesActivos').textContent = activos;
+        document.getElementById('proximasVentas').textContent = proximasVentas;
+    }
+
+    function guardarAnimales() {
+        // Simulamos guardado en memoria durante la sesión
+        // En una aplicación real, aquí se guardaría en una base de datos
+    }
+
+    function cargarAnimales() {
+        // Los datos se mantienen en memoria durante la sesión
+        mostrarAnimales();
+    }
+
+    function mostrarMensaje(mensaje, tipo) {
+        // Crear elemento de mensaje
+        const msgDiv = document.createElement('div');
+        msgDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        `;
+
+        if (tipo === 'success') {
+            msgDiv.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+        } else if (tipo === 'warning') {
+            msgDiv.style.background = 'linear-gradient(135deg, #FF9800, #f57c00)';
+        }
+
+        msgDiv.textContent = mensaje;
+        document.body.appendChild(msgDiv);
+
+        // Remover después de 3 segundos
+        setTimeout(() => {
+            msgDiv.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                document.body.removeChild(msgDiv);
+            }, 300);
+        }, 3000);
+    }
+
+    // Agregar CSS para animaciones de mensajes
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
 </body>
 </html>
